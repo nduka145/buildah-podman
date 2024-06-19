@@ -1,0 +1,25 @@
+---
+- name: Secret Server Test
+  hosts: localhost
+  gather_facts: false
+  vars:
+      secret: >-
+        {{
+            lookup(
+                'community.general.tss',
+                160468,
+                base_url='https://mysecretserver.bkfs.com/',
+                username='svc-ansible-ss',
+                password='QD17Le@db@5G@jk',
+                domain='lpsvcs.com'
+
+            )
+        }}
+  tasks:
+    - ansible.builtin.debug:
+        msg: >
+          the password is {{
+            (secret['items']
+              | items2dict(key_name='slug',
+                           value_name='itemValue'))['secret']
+          }}
